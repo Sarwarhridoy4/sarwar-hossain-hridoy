@@ -9,7 +9,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
       </div>
 
       {/* Auth card container */}
-      <div className='w-full max-w-md bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white/20'>
+      <div className='w-full '>
         {children}
       </div>
     </div>
