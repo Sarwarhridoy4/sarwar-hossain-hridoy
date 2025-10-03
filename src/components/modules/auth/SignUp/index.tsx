@@ -1,9 +1,14 @@
 "use client";
+
 import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { Upload, X, User, Mail, Phone, Lock, Rocket } from "lucide-react";
 import {
   Form,
@@ -16,20 +21,19 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { register } from "@/action/auth";
 
 export default function RegisterForm() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const router = useRouter();
 
   const form = useForm<FieldValues>({
     defaultValues: {
@@ -41,33 +45,28 @@ export default function RegisterForm() {
     },
   });
 
-  const router = useRouter();
-
+  // Handle file selection and preview
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (!file) return;
 
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB");
-        return;
-      }
-
-      setSelectedFile(file);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
     }
+
+    // Validate file size (max 5MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File size must be less than 2MB");
+      return;
+    }
+
+    setSelectedFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const removeImage = () => {
@@ -78,22 +77,20 @@ export default function RegisterForm() {
 
   const onSubmit = async (values: FieldValues) => {
     try {
-      // Create FormData for multipart/form-data
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("phone", values.phone);
       formData.append("password", values.password);
 
-      // Append profile picture if exists
       if (selectedFile) {
         formData.append("profilePicture", selectedFile);
       }
 
-      // Call register action with FormData
       const res = await register(formData);
+      console.log("Registration response:", res);
 
-      if (res?.id) {
+      if (res?.data?.id) {
         toast.success("User Registered Successfully");
         router.push("/login");
       }
@@ -107,7 +104,6 @@ export default function RegisterForm() {
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4'>
       <Card className='w-full max-w-lg border-slate-200 dark:border-slate-800 shadow-xl bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg'>
         <CardHeader className='space-y-3 text-center'>
-          {/* Logo */}
           <div className='flex justify-center items-center gap-2 group'>
             <div className='relative'>
               <Rocket className='h-10 w-10 text-blue-600 dark:text-blue-400 transition-transform group-hover:scale-110 group-hover:rotate-12 duration-300' />
@@ -117,7 +113,6 @@ export default function RegisterForm() {
               Sarwar Hossain
             </span>
           </div>
-
           <CardTitle className='text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent'>
             Create Account
           </CardTitle>
@@ -129,7 +124,7 @@ export default function RegisterForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardContent className='space-y-5'>
-              {/* Profile Picture Upload */}
+              {/* Profile Picture */}
               <FormField
                 control={form.control}
                 name='profilePicture'
@@ -148,7 +143,9 @@ export default function RegisterForm() {
                             <Image
                               src={preview}
                               alt='Preview'
-                              className='h-20 w-20 rounded-full object-cover border-2 border-blue-500 dark:border-blue-400 ring-4 ring-blue-500/20'
+                              width={80}
+                              height={80}
+                              className='rounded-full object-cover border-2 border-blue-500 dark:border-blue-400 ring-4 ring-blue-500/20'
                             />
                             <button
                               type='button'
@@ -159,7 +156,7 @@ export default function RegisterForm() {
                             </button>
                           </div>
                         ) : (
-                          <div className='h-20 w-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 group-hover:border-blue-500 dark:group-hover:border-blue-400 transition-colors'>
+                          <div className='h-20 w-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 transition-colors'>
                             <Upload className='h-8 w-8 text-slate-400 dark:text-slate-500' />
                           </div>
                         )}
@@ -169,11 +166,12 @@ export default function RegisterForm() {
                             id='profilePicture'
                             type='file'
                             accept='image/*'
-                            onChange={(e) => {
-                              handleFileChange(e);
-                              field.onChange(e); // Call the original onChange handler from react-hook-form
-                            }}
                             className='hidden'
+                            onChange={(e) => {
+                              e.preventDefault(); // Prevent auto-submit
+                              handleFileChange(e);
+                              field.onChange(e.target.files?.[0] ?? null);
+                            }}
                           />
                           <label
                             htmlFor='profilePicture'

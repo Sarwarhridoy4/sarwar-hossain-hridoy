@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 
-// Extend NextAuth types
 declare module "next-auth" {
   interface Session {
     user: {
@@ -15,6 +13,9 @@ declare module "next-auth" {
       role?: string | null;
       provider?: string | null;
     };
+    accessToken?: string;
+    refreshToken?: string;
+    accessTokenExpires?: number;
   }
   interface User {
     id: string;
@@ -23,24 +24,50 @@ declare module "next-auth" {
     image?: string | null;
     role?: string | null;
     provider?: string | null;
+    accessToken?: string;
+    refreshToken?: string;
+    accessTokenExpires?: number;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function refreshAccessToken(token: any) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/refresh-token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: token.refreshToken }),
+      }
+    );
+
+    if (!res.ok) throw new Error("Refresh failed");
+
+    const refreshed = await res.json();
+
+    return {
+      ...token,
+      accessToken: refreshed.accessToken,
+      refreshToken: refreshed.refreshToken ?? token.refreshToken,
+      accessTokenExpires: Date.now() + refreshed.expiresIn * 1000,
+    };
+  } catch (err) {
+    console.error("Error refreshing token", err);
+    return { ...token, error: "RefreshAccessTokenError" };
   }
 }
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // ✅ Google provider
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-
-    // ✅ GitHub provider
     GitHubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
     }),
-
-    // ✅ Credentials provider
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -50,107 +77,89 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) return null;
 
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            }
-          );
-
-          if (!res.ok) return null;
-
-          const user = await res.json();
-
-          if (user?.id) {
-            return {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              image: user.profilePicture || null,
-              role: user.role || "USER",
-              provider: user.provider || "CREDENTIAL",
-            };
-          }
-
-          return null;
-        } catch (err) {
-          console.error("Error in credentials authorize:", err);
-          return null;
-        }
-      },
-    }),
-  ],
-
-  // ✅ Sync Social Logins with backend
-  events: {
-    async signIn({ user, account }) {
-      if (!account?.provider) return;
-
-      try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API}/auth/${account.provider}`,
+          `${process.env.NEXT_PUBLIC_BASE_API}/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              profilePicture: user.image,
-              provider: account.provider.toUpperCase(),
+              email: credentials.email,
+              password: credentials.password,
             }),
+            credentials: "include", // include cookies from backend
           }
         );
 
-        if (!res.ok) {
-          console.error(`❌ ${account.provider} backend failed`);
-          return;
-        }
+        if (!res.ok) return null;
+        const user = await res.json();
 
-        const dbUser = await res.json();
+        if (!user?.id || !user?.accessToken) return null;
 
-        // 🔑 overwrite with backend user info
-        user.id = dbUser.id;
-        user.role = dbUser.role;
-        user.provider = dbUser.provider;
-      } catch (err) {
-        console.error("Error syncing social login:", err);
-      }
-    },
-  },
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.profilePicture || null,
+          role: user.role || "USER",
+          provider: "CREDENTIAL",
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          accessTokenExpires: Date.now() + user.expiresIn * 1000,
+        };
+      },
+    }),
+  ],
+
+  secret: process.env.AUTH_SECRET,
 
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
-        token.provider = (user as any).provider;
+        token.role = user.role;
+        token.provider = user.provider;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = user.accessTokenExpires;
+        return token;
       }
-      return token;
+
+      if (Date.now() < (token.accessTokenExpires as number)) return token;
+
+      return await refreshAccessToken(token);
     },
+
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.provider = token.provider as string;
       }
+      session.accessToken = token.accessToken as string;
+      session.refreshToken = token.refreshToken as string;
+      session.accessTokenExpires = token.accessTokenExpires as number;
+
+      // ✅ Optional: set httpOnly cookies manually if needed
+      // setCookie("accessToken", token.accessToken, { req, res, httpOnly: true });
+      // setCookie("refreshToken", token.refreshToken, { req, res, httpOnly: true });
+
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      // ✅ Always redirect after login to the intended page or dashboard
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      return `${baseUrl}/dashboard`;
     },
   },
 
-  secret: process.env.AUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      },
+    },
+  },
+
   pages: {
-    signIn: "/login", // custom login page
+    signIn: "/login",
   },
 };

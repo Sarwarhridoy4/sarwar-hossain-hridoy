@@ -27,6 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { login } from "@/action/auth";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -52,23 +53,21 @@ export default function LoginForm() {
   const onSubmit = async (values: FieldValues) => {
     setIsLoading(true);
     try {
-      const res = await signIn("credentials", {
-        redirect: false, // prevent automatic redirect
-        email: values.email,
-        password: values.password,
-      });
+      const res = await login(values);
+      console.log("Login response:", res);
 
-      if (res?.ok) {
+      if (res?.data?.id) {
         toast.success("Login Successful");
         router.push("/dashboard");
-      } else if (res?.error === "CredentialsSignin") {
-        toast.error("Invalid email or password");
-      } else {
-        toast.error(res?.error || "Login failed");
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Login failed. Please check your credentials.");
+      if (err instanceof Error) {
+        console.error(err.message);
+        toast.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+        toast.error("Login failed");
+      }
     } finally {
       setIsLoading(false);
     }

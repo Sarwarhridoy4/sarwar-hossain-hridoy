@@ -6,7 +6,7 @@ export const register = async (data: FormData | FieldValues) => {
     // Check if data is FormData (multipart) or regular object (JSON)
     const isFormData = data instanceof FormData;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/signup`, {
       method: "POST",
       // Only set Content-Type for JSON, browser sets it automatically for FormData
       headers: isFormData
@@ -39,15 +39,16 @@ export const login = async (data: FieldValues) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      credentials: "include", // ✅ include cookies from server
     });
 
-    if (!res?.ok) {
+    if (!res.ok) {
       const errorText = await res.text();
       console.error("Login Failed", errorText);
       throw new Error(errorText || "Login failed");
     }
 
-    return await res.json();
+    return await res.json(); // server already set cookies
   } catch (error) {
     console.error("Login error:", error);
     throw error;
