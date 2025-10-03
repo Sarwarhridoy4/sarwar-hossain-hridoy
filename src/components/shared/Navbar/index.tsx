@@ -14,10 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/toggleMode";
 import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session, status } = useSession();
+  console.log("Session data:", session);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -70,7 +72,18 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant='outline' size='icon'>
-                    <User className='h-5 w-5 text-purple-600 dark:text-purple-400' />
+                    {session.user?.image ? (
+                      <Image
+                        src={session?.user?.image}
+                        alt={session?.user?.name || "User"}
+                        width={40}
+                        height={40}
+                        className='rounded-2xl'
+                        priority
+                      />
+                    ) : (
+                      <User className='h-5 w-5 text-purple-600 dark:text-purple-400' />
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end' className='w-48'>

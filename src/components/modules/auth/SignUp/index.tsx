@@ -290,7 +290,7 @@ export default function RegisterForm() {
               />
             </CardContent>
 
-            <CardFooter className='flex flex-col gap-4'>
+            <CardFooter className='flex flex-col gap-4 py-4'>
               <Button
                 type='submit'
                 className='w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2.5 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]'

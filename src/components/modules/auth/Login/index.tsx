@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { login } from "@/action/auth";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,12 +52,26 @@ export default function LoginForm() {
   const onSubmit = async (values: FieldValues) => {
     setIsLoading(true);
     try {
-      const res = await login(values);
-      console.log("Login response:", res);
+      // Call NextAuth credentials provider
+      const res = await signIn("credentials", {
+        redirect: false, // Prevent automatic redirect
+        email: values.email,
+        password: values.password,
+      });
 
-      if (res?.data?.id) {
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      // Fetch session after successful login
+      const session = await getSession();
+
+      if (session?.user?.id) {
         toast.success("Login Successful");
         router.push("/dashboard");
+      } else {
+        toast.error("Failed to get session");
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -184,7 +197,7 @@ export default function LoginForm() {
                         disabled={isLoading}
                       />
                     </FormControl>
-                    <FormLabel className='text-sm font-normal text-slate-600 dark:text-slate-400 cursor-pointer'>
+                    <FormLabel className='text-sm font-normal text-slate-600 dark:text-slate-400 cursor-pointer py-4'>
                       Remember me for 30 days
                     </FormLabel>
                   </FormItem>

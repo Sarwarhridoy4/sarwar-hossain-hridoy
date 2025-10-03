@@ -3,6 +3,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 
+// Extend NextAuth types
 declare module "next-auth" {
   interface Session {
     user: {
@@ -12,10 +13,10 @@ declare module "next-auth" {
       image?: string | null;
       role?: string | null;
       provider?: string | null;
+      accessToken?: string;
+      refreshToken?: string;
+      accessTokenExpires?: number;
     };
-    accessToken?: string;
-    refreshToken?: string;
-    accessTokenExpires?: number;
   }
   interface User {
     id: string;
@@ -30,6 +31,7 @@ declare module "next-auth" {
   }
 }
 
+// Refresh access token helper
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function refreshAccessToken(token: any) {
   try {
@@ -59,6 +61,10 @@ async function refreshAccessToken(token: any) {
 }
 
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt", // Required for CredentialsProvider
+  },
+
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -86,14 +92,16 @@ export const authOptions: NextAuthOptions = {
               email: credentials.email,
               password: credentials.password,
             }),
-            credentials: "include", // include cookies from backend
+            credentials: "include", // ✅ receive backend cookies
           }
         );
 
         if (!res.ok) return null;
-        const user = await res.json();
 
-        if (!user?.id || !user?.accessToken) return null;
+        const json = await res.json();
+        const user = json.data;
+
+        if (!user?.id || !user?.accessToken || !user?.refreshToken) return null;
 
         return {
           id: user.id,
@@ -104,7 +112,7 @@ export const authOptions: NextAuthOptions = {
           provider: "CREDENTIAL",
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
-          accessTokenExpires: Date.now() + user.expiresIn * 1000,
+          accessTokenExpires: Date.now() + 60 * 60 * 1000, // or use expires from token
         };
       },
     }),
@@ -124,35 +132,34 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      if (Date.now() < (token.accessTokenExpires as number)) return token;
+      // If token valid, return
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
 
+      // Else refresh
       return await refreshAccessToken(token);
     },
 
     async session({ session, token }) {
-      if (session?.user) {
+      if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.provider = token.provider as string;
+        session.user.accessToken = token.accessToken as string;
+        session.user.refreshToken = token.refreshToken as string;
+        session.user.accessTokenExpires = token.accessTokenExpires as number;
       }
-      session.accessToken = token.accessToken as string;
-      session.refreshToken = token.refreshToken as string;
-      session.accessTokenExpires = token.accessTokenExpires as number;
-
-      // ✅ Optional: set httpOnly cookies manually if needed
-      // setCookie("accessToken", token.accessToken, { req, res, httpOnly: true });
-      // setCookie("refreshToken", token.refreshToken, { req, res, httpOnly: true });
-
       return session;
     },
   },
 
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      name: "next-auth.session-token",
       options: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production", // ✅ works on dev & prod
         sameSite: "lax",
         path: "/",
       },
