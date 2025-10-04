@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -28,7 +28,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function LoginForm() {
+ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<FieldValues>({
@@ -276,5 +276,13 @@ export default function LoginForm() {
         </Form>
       </Card>
     </div>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

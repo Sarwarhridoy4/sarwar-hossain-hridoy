@@ -18,8 +18,49 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sarwar Hossain Hridoy",
-  description: "A passionate Web Developer. Working as a Full Stack Developer",
+  metadataBase: new URL("https://sarwar-hossain-hridoy.vercel.app"),
+  title: "Sarwar Hossain | Full-Stack Developer",
+  description:
+    "Crafting exceptional digital experiences with Node.js, React, Next.js, and modern technologies.",
+  keywords: [
+    "Full-Stack Developer",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Python",
+    "Golang",
+    "MongoDB",
+    "NestJs",
+    "Prisma",
+    "Mongoose",
+    "Portfolio",
+    "Web Developer",
+  ],
+  authors: [{ name: "Sarwar Hossain" }],
+  openGraph: {
+    title: "Sarwar Hossain | Full-Stack Developer",
+    description:
+      "Crafting exceptional digital experiences with Node.js, React, Next.js, and modern technologies.",
+    url: "https://sarwar-hossain-hridoy.vercel.app",
+    siteName: "Sarwar Hossain Portfolio",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Sarwar Hossain",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sarwar Hossain | Full-Stack Developer",
+    description:
+      "Crafting exceptional digital experiences with Node.js, React, Next.js, and modern technologies.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

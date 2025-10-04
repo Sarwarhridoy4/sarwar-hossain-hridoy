@@ -70,21 +70,19 @@ const Navbar = () => {
             {/* Auth Section */}
             {session ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant='outline' size='icon'>
-                    {session.user?.image ? (
-                      <Image
-                        src={session?.user?.image}
-                        alt={session?.user?.name || "User"}
-                        width={40}
-                        height={40}
-                        className='rounded-2xl'
-                        priority
-                      />
-                    ) : (
-                      <User className='h-5 w-5 text-purple-600 dark:text-purple-400' />
-                    )}
-                  </Button>
+                <DropdownMenuTrigger>
+                  {session.user?.image ? (
+                    <Image
+                      src={session?.user?.image}
+                      alt={session?.user?.name || "User"}
+                      width={40}
+                      height={40}
+                      className='rounded-2xl'
+                      priority
+                    />
+                  ) : (
+                    <User className='h-5 w-5 text-purple-600 dark:text-purple-400' />
+                  )}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end' className='w-48'>
                   <DropdownMenuLabel>
@@ -98,8 +96,10 @@ const Navbar = () => {
                     <LayoutDashboard className='h-4 w-4 mr-2' /> Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className='h-4 w-4 mr-2' /> Logout
+                  <DropdownMenuItem>
+                    <div onClick={() => signOut()} className='flex gap-2'>
+                      <LogOut className='h-4 w-4 mr-2' /> Logout
+                    </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
