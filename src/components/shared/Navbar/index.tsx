@@ -104,7 +104,7 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href='/api/auth/signin'>
+              <Link href='/login'>
                 <Button variant='default' size='sm'>
                   Sign In
                 </Button>
