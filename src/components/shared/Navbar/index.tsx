@@ -153,7 +153,7 @@ const Navbar = () => {
                 Logout
               </Button>
             ) : (
-              <Link href='/api/auth/signin'>
+              <Link href='/login'>
                 <Button variant='default' className='w-full mt-2'>
                   Sign In
                 </Button>
