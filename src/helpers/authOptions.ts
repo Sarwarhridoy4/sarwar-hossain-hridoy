@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -32,7 +33,7 @@ declare module "next-auth" {
 }
 
 // Refresh access token helper
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 async function refreshAccessToken(token: any) {
   try {
     const res = await fetch(
@@ -121,15 +122,57 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
+      // On initial sign in, NextAuth provides `user`.
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        token.provider = user.provider;
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = user.accessTokenExpires;
-        return token;
+        // Determine provider from `account` (NextAuth provides account on OAuth sign-in)
+        const provider = account?.provider?.toLowerCase();
+
+        try {
+          if (provider === "google" || provider === "github") {
+            // Build payload for backend. Many backends expect an access token or profile.
+            // Here we send both `account` and `profile` so backend can decide what it needs.
+            const payload = { account, profile, user };
+
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_BASE_API}/auth/${provider}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                credentials: "include",
+              }
+            );
+
+            if (res.ok) {
+              const json = await res.json();
+              const u = json.data;
+              token.id = u.id ?? user.id ?? token.sub;
+              token.role = u.role ?? user.role;
+              token.provider = provider.toUpperCase();
+              token.accessToken = u.accessToken ?? token.accessToken;
+              token.refreshToken = u.refreshToken ?? token.refreshToken;
+              token.accessTokenExpires =
+                Date.now() + (u.expiresIn ?? 3600) * 1000;
+              return token;
+            }
+            // If backend exchange failed, continue and fall back to basic mapping
+          }
+
+          // Default behavior: map available user fields into token
+          token.id = user.id ?? token.id;
+          token.role = user.role ?? token.role;
+          token.provider = token.provider ?? provider?.toUpperCase() ?? null;
+          token.accessToken = token.accessToken ?? (user as any).accessToken;
+          token.refreshToken = token.refreshToken ?? (user as any).refreshToken;
+          token.accessTokenExpires =
+            token.accessTokenExpires ?? (user as any).accessTokenExpires;
+          return token;
+        } catch (err) {
+          console.error("Error exchanging provider tokens:", err);
+          // Preserve any existing token fields
+          return token;
+        }
       }
 
       // If token valid, return
@@ -159,7 +202,7 @@ export const authOptions: NextAuthOptions = {
       name: "next-auth.session-token",
       options: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // ✅ works on dev & prod
+        secure: true, // ✅ works on dev & prod
         sameSite: "lax",
         path: "/",
       },

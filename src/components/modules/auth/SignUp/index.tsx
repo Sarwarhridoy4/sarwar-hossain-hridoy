@@ -88,7 +88,6 @@ export default function RegisterForm() {
       }
 
       const res = await register(formData);
-      console.log("Registration response:", res);
 
       if (res?.data?.id) {
         toast.success("User Registered Successfully");

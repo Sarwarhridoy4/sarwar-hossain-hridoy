@@ -19,7 +19,6 @@ import Image from "next/image";
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session, status } = useSession();
-  console.log("Session data:", session);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -32,6 +31,15 @@ const Navbar = () => {
 
   // Prevent rendering until client has determined session
   if (status === "loading") return null;
+  const handleSignOut = () => {
+    // Remove custom non-HTTP-only cookie
+    document.cookie = "accessToken=; path=/; max-age=0;";
+
+    // Sign out from NextAuth
+    signOut({
+      callbackUrl: "/login",
+    });
+  };
 
   return (
     <nav className='sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm'>
@@ -97,7 +105,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <div onClick={() => signOut()} className='flex gap-2'>
+                    <div onClick={handleSignOut} className='flex gap-2'>
                       <LogOut className='h-4 w-4 mr-2' /> Logout
                     </div>
                   </DropdownMenuItem>
@@ -148,7 +156,7 @@ const Navbar = () => {
               <Button
                 variant='outline'
                 className='w-full mt-2'
-                onClick={() => signOut()}
+                onClick={handleSignOut}
               >
                 Logout
               </Button>
