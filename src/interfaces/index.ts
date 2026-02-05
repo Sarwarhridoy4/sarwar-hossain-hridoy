@@ -27,12 +27,12 @@ export interface SafeResume {
   summary: string | null;
   professionalPhoto: string | null;
   isPublic: boolean;
-  experiences: Record<string, any>[] | null;
-  education: Record<string, any>[] | null;
+  experiences: Record<string, unknown>[] | null;
+  education: Record<string, unknown>[] | null;
   skills: string[];
-  projects: Record<string, any>[] | null;
-  certifications: Record<string, any>[] | null;
-  contactInfo: Record<string, any> | null;
+  projects: Record<string, unknown>[] | null;
+  certifications: Record<string, unknown>[] | null;
+  contactInfo: Record<string, unknown> | null;
   userId: string;
   createdById?: string | null;
   updatedById?: string | null;
