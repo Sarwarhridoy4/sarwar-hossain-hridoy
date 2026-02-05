@@ -18,9 +18,15 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className='inline-flex items-center gap-2 rounded-full border border-slate-300/60 bg-white/70 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70 dark:text-slate-200'>
-            <Sparkles className='h-4 w-4 text-amber-500' />
-            Available for select freelance and remote roles
+          <div className='flex flex-wrap items-center gap-3'>
+            <div className='inline-flex items-center gap-2 rounded-full border border-amber-300/70 bg-amber-100/70 px-4 py-2 text-sm font-medium text-amber-900 shadow-sm backdrop-blur dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100'>
+              <span className='inline-flex h-2 w-2 rounded-full bg-amber-500' />
+              Under development
+            </div>
+            <div className='inline-flex items-center gap-2 rounded-full border border-slate-300/60 bg-white/70 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70 dark:text-slate-200'>
+              <Sparkles className='h-4 w-4 text-amber-500' />
+              Available for select freelance and remote roles
+            </div>
           </div>
 
           <h1
