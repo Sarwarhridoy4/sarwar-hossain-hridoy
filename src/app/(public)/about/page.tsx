@@ -37,6 +37,9 @@ export const metadata: Metadata = {
     description:
       "Full Stack MERN Developer specializing in scalable web & mobile applications with 3+ years of professional experience.",
   },
+  alternates: {
+    canonical: "https://sarwar-hossain-hridoy.vercel.app/about",
+  },
 };
 
 const AboutPage = () => {

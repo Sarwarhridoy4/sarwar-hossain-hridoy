@@ -42,11 +42,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm'>
+    <nav
+      className='sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm'
+      aria-label='Primary'
+    >
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-between items-center h-16'>
           {/* Logo */}
-          <div className='flex items-center gap-2 group cursor-pointer'>
+          <Link href='/' className='flex items-center gap-2 group'>
             <div className='relative'>
               <Rocket className='h-8 w-8 text-blue-600 dark:text-blue-400 transition-transform group-hover:scale-110 group-hover:rotate-12 duration-300' />
               <div className='absolute inset-0 blur-xl bg-blue-500/30 group-hover:bg-blue-500/50 transition-all duration-300 rounded-full'></div>
@@ -54,7 +57,7 @@ const Navbar = () => {
             <span className='text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent'>
               Sarwar Hossain
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className='hidden md:flex items-center gap-1'>
@@ -125,6 +128,9 @@ const Navbar = () => {
               size='icon'
               className='md:hidden'
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-expanded={mobileMenuOpen}
+              aria-controls='mobile-nav'
+              aria-label='Toggle navigation menu'
             >
               {mobileMenuOpen ? (
                 <X className='h-5 w-5' />
@@ -138,7 +144,10 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className='md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-lg'>
+        <div
+          id='mobile-nav'
+          className='md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-lg'
+        >
           <div className='px-4 py-4 space-y-2'>
             {navLinks.map((link) => (
               <Link

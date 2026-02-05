@@ -3,9 +3,9 @@ import { Github, Linkedin, Twitter, Rocket } from "lucide-react";
 
 const Footer = () => {
   const footerLinks = [
-    { name: "Blogs", href: "#blogs" },
-    { name: "Projects", href: "#projects" },
-    { name: "Resume", href: "#resume" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "Projects", href: "/projects" },
+    { name: "Resume", href: "/resume" },
   ];
 
   const socialLinks = [
@@ -15,8 +15,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className='relative border-t border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900'>
-      <div className='absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none'></div>
+    <footer className='relative border-t border-slate-200 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80'>
 
       <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-12 mb-8'>
@@ -32,8 +31,8 @@ const Footer = () => {
               </span>
             </div>
             <p className='text-sm text-slate-600 dark:text-slate-400 leading-relaxed'>
-              Building the future of web experiences with modern technology and
-              innovative design.
+              Building reliable software and refined interfaces for growing
+              teams.
             </p>
           </div>
 
@@ -47,7 +46,7 @@ const Footer = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className='block text-sm text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200 hover:translate-x-1 transform'
+                  className='block text-sm text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200'
                 >
                   {link.name}
                 </a>
@@ -72,7 +71,6 @@ const Footer = () => {
                 >
                   <div className='relative p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20'>
                     <social.icon className='h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300' />
-                    <div className='absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-300'></div>
                   </div>
                 </a>
               ))}
@@ -87,7 +85,7 @@ const Footer = () => {
               © {new Date().getFullYear()} Sarwar Hossain. All rights reserved.
             </p>
             <p className='text-sm text-slate-500 dark:text-slate-500'>
-              Built with ❤️ using Next.js & TailwindCSS
+              Built with Next.js, TailwindCSS, and a custom API stack.
             </p>
           </div>
         </div>

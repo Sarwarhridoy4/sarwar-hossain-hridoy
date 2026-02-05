@@ -1,0 +1,20 @@
+# Sarwar Hossain Portfolio
+
+## Summary
+Full-stack developer focused on API engineering, product-grade UI, and scalable web platforms.
+
+## Primary Topics
+- TypeScript, Next.js, React, Node.js, Express
+- Prisma, PostgreSQL, REST APIs
+- Authentication, authorization, media pipelines
+- UX engineering, accessibility, performance
+
+## Key Pages
+- https://sarwar-hossain-hridoy.vercel.app/
+- https://sarwar-hossain-hridoy.vercel.app/projects
+- https://sarwar-hossain-hridoy.vercel.app/blogs
+- https://sarwar-hossain-hridoy.vercel.app/about
+- https://sarwar-hossain-hridoy.vercel.app/contact
+
+## Contact
+Use the contact page for project inquiries and collaboration requests.

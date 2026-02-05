@@ -1,49 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Award, FileText, Users } from "lucide-react";
+import {
+  BarChart3,
+  CloudUpload,
+  LockKeyhole,
+  ServerCog,
+} from "lucide-react";
 
 const Stats = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [particles, setParticles] = useState<
-    {
-      x: number;
-      y: number;
-      size: number;
-      color: string;
-      dx: number;
-      dy: number;
-    }[]
-  >([]);
-
-  const particleCount = 20;
-  const cardGradient = "from-cyan-500 via-blue-500 to-purple-500";
-
-  useEffect(() => {
-    // Track mouse
-    const handleMouseMove = (e: MouseEvent) =>
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-
-    // Generate particle positions once on client
-    const generatedParticles = Array.from({ length: particleCount }).map(
-      () => ({
-        size: Math.random() * 3 + 2,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        dx: Math.random() * 50 - 25,
-        dy: Math.random() * 50 - 25,
-        color: ["#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"][
-          Math.floor(Math.random() * 4)
-        ],
-      })
-    );
-    setParticles(generatedParticles);
-
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -54,51 +20,39 @@ const Stats = () => {
     visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
   };
 
-  const stats = {
-    totalUsers: 6,
-    totalBlogs: 4,
-    totalResumes: 10,
-  };
+  const capabilities = [
+    {
+      icon: LockKeyhole,
+      title: "Role-based authentication",
+      description:
+        "NextAuth powered sign-in with admin-level guards and secure sessions.",
+    },
+    {
+      icon: CloudUpload,
+      title: "Media + resume pipeline",
+      description:
+        "Cloudinary file management with structured resume generation flows.",
+    },
+    {
+      icon: ServerCog,
+      title: "API-first architecture",
+      description:
+        "Typed REST endpoints for blogs, projects, stats, and user management.",
+    },
+    {
+      icon: BarChart3,
+      title: "Analytics-ready",
+      description:
+        "Modular stats services ready for dashboards and growth reporting.",
+    },
+  ];
 
   return (
     <section
-      id='admin'
-      className='relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden'
+      id='capabilities'
+      className='relative py-20 px-4 sm:px-6 lg:px-8'
+      aria-labelledby='capabilities-title'
     >
-      {/* Mouse-following radial glow */}
-      <div
-        className='fixed inset-0 pointer-events-none opacity-30'
-        style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59,130,246,0.15), transparent 40%)`,
-        }}
-      />
-
-      {/* Floating particles */}
-      <div className='absolute inset-0 pointer-events-none'>
-        {particles.map((p, i) => (
-          <motion.div
-            key={i}
-            className='absolute rounded-full'
-            style={{
-              width: p.size,
-              height: p.size,
-              backgroundColor: p.color,
-              opacity: 0.25,
-            }}
-            initial={{ x: p.x, y: p.y }}
-            animate={{
-              x: [p.x, p.x + p.dx, p.x, p.x - p.dx, p.x],
-              y: [p.y, p.y + p.dy, p.y, p.y - p.dy, p.y],
-            }}
-            transition={{
-              duration: 20 + Math.random() * 10,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
-
       <motion.div
         variants={containerVariants}
         initial='hidden'
@@ -108,58 +62,46 @@ const Stats = () => {
       >
         <motion.h2
           variants={itemVariants}
-          className='text-4xl sm:text-5xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500'
+          id='capabilities-title'
+          className='text-3xl sm:text-4xl lg:text-5xl font-semibold mb-10 text-slate-900 dark:text-white'
         >
-          Admin Dashboard
+          Platform capabilities built into the stack
         </motion.h2>
 
-        <div className='grid md:grid-cols-3 gap-6'>
-          {[
-            { icon: Users, value: stats.totalUsers, label: "Total Users" },
-            { icon: FileText, value: stats.totalBlogs, label: "Blog Posts" },
-            {
-              icon: Award,
-              value: stats.totalResumes,
-              label: "Resumes Generated",
-            },
-          ].map((stat, idx) => {
-            const IconComponent = stat.icon;
+        <div className='grid md:grid-cols-2 gap-6'>
+          {capabilities.map((capability, idx) => {
+            const IconComponent = capability.icon;
             return (
               <motion.div
                 key={idx}
                 variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                className='relative group'
+                whileHover={{ y: -4 }}
+                className='relative rounded-3xl border border-slate-200/70 bg-white/85 p-6 shadow-sm backdrop-blur transition-shadow duration-300 dark:border-slate-700/60 dark:bg-slate-900/80'
               >
-                {/* Gradient glow */}
-                <div
-                  className={`absolute -inset-0.5 bg-gradient-to-r ${cardGradient} rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300`}
-                />
-                {/* Card */}
-                <div className='relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-2xl p-6'>
-                  <div className='flex items-center justify-between mb-4'>
-                    <IconComponent className='w-8 h-8 text-cyan-400' />
-                    <span
-                      className={`text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${cardGradient}`}
-                    >
-                      {stat.value}
-                    </span>
+                <div className='flex items-start gap-4'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20'>
+                    <IconComponent className='h-6 w-6' />
                   </div>
-                  <h3 className='text-gray-700 dark:text-slate-300 font-semibold'>
-                    {stat.label}
-                  </h3>
+                  <div>
+                    <h3 className='text-lg font-semibold text-slate-900 dark:text-white'>
+                      {capability.title}
+                    </h3>
+                    <p className='mt-2 text-sm text-slate-600 dark:text-slate-300'>
+                      {capability.description}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             );
           })}
         </div>
 
-        <motion.div variants={itemVariants} className='text-center mt-8'>
+        <motion.div variants={itemVariants} className='text-left mt-8'>
           <a
             href='/admin'
-            className='px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 inline-block text-white'
+            className='inline-flex items-center rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100'
           >
-            Go to Dashboard
+            Explore the Admin Dashboard
           </a>
         </motion.div>
       </motion.div>

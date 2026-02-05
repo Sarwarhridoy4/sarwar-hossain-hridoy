@@ -1,139 +1,149 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const HeroSection = () => {
-  const [mounted, setMounted] = useState(false);
-
-  // Ensure client-only code runs after mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
-    <section className='relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden'>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className='max-w-5xl mx-auto text-center z-10'
-      >
-        {/* Status Badge */}
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className='mb-6 inline-block'
-        >
-          <span className='px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 text-sm font-medium backdrop-blur-sm'>
-            🚀 Available for freelance work
-          </span>
-        </motion.div>
-
-        {/* Profile Image with Glow */}
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className='mb-8 inline-block'
-        >
-          <div className='relative w-32 h-32 mx-auto'>
-            <div className='absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full blur opacity-75' />
-            <Image
-              src='/sarwar.jpg'
-              alt='Sarwar Hossain'
-              width={128}
-              height={128}
-              className='relative w-full h-full rounded-full object-cover border-4 border-white dark:border-slate-900'
-            />
-          </div>
-        </motion.div>
-
-        {/* Name */}
-        <h1 className='text-5xl sm:text-7xl lg:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
-          Sarwar Hossain
-        </h1>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className='text-xl sm:text-2xl lg:text-3xl text-slate-700 dark:text-slate-300 mb-4'
-        >
-          Full-Stack Developer & Digital Architect
-        </motion.p>
-
-        {/* Short Bio */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className='text-lg text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto'
-        >
-          Crafting exceptional digital experiences with Node.js, React, Next.js
-          and modern technologies. Building robust APIs and scalable solutions.
-        </motion.p>
-
-        {/* CTA Buttons */}
+    <section
+      className='relative min-h-[90vh] flex items-center px-4 sm:px-6 lg:px-8'
+      aria-labelledby='hero-title'
+    >
+      <div className='max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className='flex flex-wrap gap-4 justify-center'
+          transition={{ duration: 0.6 }}
         >
-          <Link
-            href='/projects'
-            className='group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center gap-2'
+          <div className='flex flex-wrap items-center gap-3'>
+            <div className='inline-flex items-center gap-2 rounded-full border border-amber-300/70 bg-amber-100/70 px-4 py-2 text-sm font-medium text-amber-900 shadow-sm backdrop-blur dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100'>
+              <span className='inline-flex h-2 w-2 rounded-full bg-amber-500' />
+              Under development
+            </div>
+            <div className='inline-flex items-center gap-2 rounded-full border border-slate-300/60 bg-white/70 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/70 dark:text-slate-200'>
+              <Sparkles className='h-4 w-4 text-amber-500' />
+              Available for select freelance and remote roles
+            </div>
+          </div>
+
+          <h1
+            id='hero-title'
+            className='mt-6 text-5xl sm:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white'
           >
-            View Projects
-            <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
-          </Link>
-          <Link
-            href='/blogs'
-            className='px-8 py-4 bg-slate-200/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-300 dark:border-slate-700 rounded-lg font-semibold hover:bg-slate-300 hover:dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300'
-          >
-            Read Blog
-          </Link>
-          <Link
-            href='/resume'
-            className='px-8 py-4 bg-slate-200/70 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-300 dark:border-slate-700 rounded-lg font-semibold hover:bg-slate-300 hover:dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300'
-          >
-            Generate Resume
-          </Link>
+            Sarwar Hossain
+          </h1>
+          <p className='mt-4 text-xl sm:text-2xl text-slate-700 dark:text-slate-300'>
+            Full-stack developer crafting resilient backends and premium
+            frontends for modern products.
+          </p>
+          <p className='mt-4 max-w-xl text-base sm:text-lg text-slate-600 dark:text-slate-400'>
+            I design API-first systems with TypeScript, Node.js, Prisma, and
+            Next.js—balancing performance, security, and delightful UX.
+          </p>
+
+          <div className='mt-8 flex flex-wrap gap-4'>
+            <Link
+              href='/projects'
+              className='group inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:-translate-y-0.5 hover:shadow-slate-900/30'
+            >
+              View Projects
+              <ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-1' />
+            </Link>
+            <Link
+              href='/contact'
+              className='inline-flex items-center rounded-full border border-slate-300 bg-white/70 px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100'
+            >
+              Start a Project
+            </Link>
+            <Link
+              href='/resume'
+              className='inline-flex items-center rounded-full border border-transparent px-6 py-3 text-sm font-semibold text-slate-700 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+            >
+              Download Resume
+            </Link>
+          </div>
+
+          <div className='mt-10 grid grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-400'>
+            <div>
+              <p className='text-xs uppercase tracking-[0.2em] text-slate-500'>
+                Core Focus
+              </p>
+              <p className='mt-2 font-medium text-slate-800 dark:text-slate-100'>
+                API engineering, UX-driven interfaces, product reliability
+              </p>
+            </div>
+            <div>
+              <p className='text-xs uppercase tracking-[0.2em] text-slate-500'>
+                Tech Stack
+              </p>
+              <p className='mt-2 font-medium text-slate-800 dark:text-slate-100'>
+                TypeScript, Next.js, Express, Prisma, PostgreSQL
+              </p>
+            </div>
+          </div>
         </motion.div>
-      </motion.div>
 
-      {/* Floating Particles – Only render after mount */}
-      {mounted && (
-        <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-          {[...Array(20)].map((_, i) => {
-            const xStart = Math.random() * window.innerWidth;
-            const yStart = Math.random() * window.innerHeight;
-            const xEnd = Math.random() * window.innerWidth;
-            const yEnd = Math.random() * window.innerHeight;
-            const duration = Math.random() * 10 + 20;
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className='relative'
+        >
+          <div className='absolute -inset-6 rounded-4xl bg-linear-to-br from-amber-200/50 via-emerald-200/30 to-blue-200/40 blur-2xl dark:from-amber-500/8 dark:via-emerald-400/8 dark:to-blue-500/8' />
+          <div className='relative rounded-4xl border border-slate-200/70 bg-white/85 p-6 shadow-xl backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/80'>
+            <div className='flex items-center gap-4'>
+              <div className='relative h-20 w-20'>
+                <Image
+                  src='/sarwar.jpg'
+                  alt='Portrait of Sarwar Hossain'
+                  width={80}
+                  height={80}
+                  className='h-20 w-20 rounded-2xl object-cover'
+                  priority
+                />
+              </div>
+              <div>
+                <p className='text-sm text-slate-500'>Based in</p>
+                <p className='text-lg font-semibold text-slate-900 dark:text-white'>
+                  Dhaka, Bangladesh
+                </p>
+                <p className='text-sm text-slate-600 dark:text-slate-400'>
+                  Working globally · UTC+6
+                </p>
+              </div>
+            </div>
 
-            return (
-              <motion.div
-                key={i}
-                className='absolute w-2 h-2 bg-cyan-500/20 dark:bg-cyan-500/30 rounded-full'
-                initial={{ x: xStart, y: yStart }}
-                animate={{ x: xEnd, y: yEnd }}
-                transition={{
-                  duration,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
+            <div className='mt-6 rounded-2xl border border-slate-200/70 bg-slate-50/70 p-4 text-sm text-slate-700 dark:border-slate-700/60 dark:bg-slate-950/60 dark:text-slate-300'>
+              <p className='font-medium text-slate-900 dark:text-white'>
+                Recent highlight
+              </p>
+              <p className='mt-2'>
+                Built a portfolio platform with role-based access, file
+                management, and analytics-ready APIs.
+              </p>
+            </div>
+
+            <div className='mt-6 grid grid-cols-2 gap-3 text-sm'>
+              {[
+                "Design systems",
+                "Backend scaling",
+                "SEO + Core Web Vitals",
+                "Ship-ready docs",
+              ].map((item) => (
+                <span
+                  key={item}
+                  className='rounded-full border border-slate-200 bg-white/70 px-3 py-2 text-slate-700 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/70 dark:text-slate-200'
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };

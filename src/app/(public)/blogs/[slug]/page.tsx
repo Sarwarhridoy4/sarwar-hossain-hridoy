@@ -1,22 +1,44 @@
 import type { Metadata } from "next";
 
-// ✅ Corrected: Await `params` before destructuring
-export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await props.params; // ✅ Fix here
-
+  const title = params.slug.replace(/-/g, " ");
   return {
-    title: `${slug.replace(/-/g, " ")} | Blog | Sarwar Hossain`,
-    description: `Read the detailed blog post on ${slug.replace(
-      /-/g,
-      " "
-    )} by Sarwar Hossain.`,
+    title: `${title} | Blog | Sarwar Hossain`,
+    description: `Read the detailed blog post on ${title} by Sarwar Hossain.`,
+    alternates: {
+      canonical: `https://sarwar-hossain-hridoy.vercel.app/blogs/${params.slug}`,
+    },
+    openGraph: {
+      title: `${title} | Blog | Sarwar Hossain`,
+      description: `Read the detailed blog post on ${title} by Sarwar Hossain.`,
+      url: `https://sarwar-hossain-hridoy.vercel.app/blogs/${params.slug}`,
+      siteName: "Sarwar Hossain Portfolio",
+      images: [
+        {
+          url: "https://sarwar-hossain-hridoy.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Sarwar Hossain Blog",
+        },
+      ],
+      locale: "en_US",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Blog | Sarwar Hossain`,
+      description: `Read the detailed blog post on ${title} by Sarwar Hossain.`,
+      images: ["https://sarwar-hossain-hridoy.vercel.app/og-image.png"],
+    },
   };
 }
 
-const BlogDetailPage = async ({ params }: { params: { slug: string } }) => {
-  const { slug } = await params;
+const BlogDetailPage = ({ params }: { params: { slug: string } }) => {
+  const { slug } = params;
 
   return (
     <div className='min-h-screen flex items-center justify-center'>

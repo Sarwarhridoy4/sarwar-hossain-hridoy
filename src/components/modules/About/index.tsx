@@ -227,17 +227,21 @@ export default function AboutSection() {
         }}
       />
 
-      <section className='min-h-screen py-20 bg-gray-50 dark:bg-gray-950'>
+      <section className='min-h-screen py-20 text-slate-950 dark:text-slate-100 relative overflow-hidden'>
+        <div className='absolute inset-0 page-aurora -z-10 dark:hidden' />
+        <div className='absolute inset-0 page-aurora-dark -z-10 hidden dark:block' />
+        <div className='absolute inset-0 bg-grid opacity-20 -z-10 dark:hidden' />
+        <div className='absolute inset-0 bg-grid-dark opacity-10 -z-10 hidden dark:block' />
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           {/* Header */}
           <div className='text-center mb-16'>
-            <h1 className='text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
+            <h1 className='text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-slate-900 dark:text-white'>
               Sarwar Hossain
             </h1>
-            <p className='text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-gray-200 mb-4'>
+            <p className='text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-200 mb-4'>
               Full Stack MERN Developer
             </p>
-            <div className='flex flex-wrap justify-center items-center gap-4 text-gray-600 dark:text-gray-400'>
+            <div className='flex flex-wrap justify-center items-center gap-4 text-slate-600 dark:text-slate-400'>
               <span className='flex items-center gap-2'>
                 <MapPin className='w-5 h-5' />
                 Dhaka, Bangladesh
@@ -252,13 +256,13 @@ export default function AboutSection() {
           {/* Main Content Grid */}
           <div className='grid lg:grid-cols-3 gap-8 mb-16'>
             {/* Introduction Card */}
-            <div className='lg:col-span-2 rounded-2xl shadow-2xl p-8 sm:p-10 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'>
+            <div className='lg:col-span-2 rounded-2xl shadow-2xl p-8 sm:p-10 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'>
               <div className='flex items-center gap-4 mb-6'>
                 <div className='w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                   <Rocket className='w-8 h-8 text-blue-600 dark:text-cyan-400' />
                 </div>
                 <div>
-                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                  <h2 className='text-3xl font-bold text-slate-900 dark:text-white'>
                     About Me
                   </h2>
                   <p className='text-lg text-blue-600 dark:text-cyan-400 font-semibold'>
@@ -267,7 +271,7 @@ export default function AboutSection() {
                 </div>
               </div>
 
-              <div className='space-y-4 text-gray-700 dark:text-gray-300 leading-relaxed'>
+              <div className='space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed'>
                 <p className='text-lg'>
                   I&apos;m a passionate{" "}
                   <strong className='text-blue-600 dark:text-cyan-400'>
@@ -322,7 +326,7 @@ export default function AboutSection() {
                   href='https://github.com/sarwarhridoy4'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 shadow-lg transform hover:scale-105'
+                  className='inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all bg-slate-900 text-white hover:bg-slate-800 dark:bg-white/85 dark:text-slate-900 dark:hover:bg-slate-100 shadow-lg transform hover:scale-105'
                 >
                   <Github className='w-5 h-5' />
                   GitHub
@@ -349,7 +353,7 @@ export default function AboutSection() {
                   href='https://drive.google.com/file/d/1A3Go9SF16olXwTZusTeGi4wWDyy6kYGk/view?usp=share_link'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-500 dark:hover:border-cyan-500 hover:text-blue-600 dark:hover:text-cyan-400 shadow-lg transform hover:scale-105'
+                  className='inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all border-2 border-slate-300/80 dark:border-slate-600/60 text-slate-700 dark:text-slate-300 hover:border-blue-500 dark:hover:border-cyan-500 hover:text-blue-600 dark:hover:text-cyan-400 shadow-lg transform hover:scale-105'
                 >
                   <Download className='w-5 h-5' />
                   Resume
@@ -362,20 +366,20 @@ export default function AboutSection() {
               {achievements.map((achievement, index) => (
                 <div
                   key={index}
-                  className='rounded-2xl shadow-xl p-6 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10 hover:scale-105 transition-transform'
+                  className='rounded-2xl shadow-xl p-6 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10 hover:scale-105 transition-transform'
                 >
                   <div className='flex items-center gap-4'>
                     <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                       <achievement.icon className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                     </div>
                     <div>
-                      <div className='text-2xl font-bold text-gray-900 dark:text-white'>
+                      <div className='text-2xl font-bold text-slate-900 dark:text-white'>
                         {achievement.value}
                       </div>
-                      <div className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+                      <div className='text-sm font-semibold text-slate-600 dark:text-slate-400'>
                         {achievement.title}
                       </div>
-                      <div className='text-xs text-gray-500 dark:text-gray-500'>
+                      <div className='text-xs text-slate-500 dark:text-slate-500'>
                         {achievement.description}
                       </div>
                     </div>
@@ -387,18 +391,18 @@ export default function AboutSection() {
 
           {/* Experience Section */}
           <div className='mb-16'>
-            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
+            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center text-slate-900 dark:text-white'>
               Professional Experience
             </h2>
             <div className='space-y-6'>
               {experience.map((exp, index) => (
                 <div
                   key={index}
-                  className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10 hover:scale-[1.02] transition-transform'
+                  className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10 hover:scale-[1.02] transition-transform'
                 >
                   <div className='flex flex-wrap items-start justify-between gap-4 mb-4'>
                     <div>
-                      <h3 className='text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3'>
+                      <h3 className='text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3'>
                         <Building2 className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                         {exp.company}
                       </h3>
@@ -407,17 +411,17 @@ export default function AboutSection() {
                       </p>
                     </div>
                     <div className='text-right'>
-                      <p className='flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium'>
+                      <p className='flex items-center gap-2 text-slate-600 dark:text-slate-400 font-medium'>
                         <Calendar className='w-4 h-4' />
                         {exp.period}
                       </p>
-                      <p className='flex items-center gap-2 text-gray-500 dark:text-gray-500 text-sm mt-1'>
+                      <p className='flex items-center gap-2 text-slate-500 dark:text-slate-500 text-sm mt-1'>
                         <MapPin className='w-4 h-4' />
                         {exp.location}
                       </p>
                     </div>
                   </div>
-                  <p className='text-gray-700 dark:text-gray-300 mb-4'>
+                  <p className='text-slate-700 dark:text-slate-300 mb-4'>
                     {exp.description}
                   </p>
                   {exp.highlights && (
@@ -425,7 +429,7 @@ export default function AboutSection() {
                       {exp.highlights.map((highlight, hIndex) => (
                         <li
                           key={hIndex}
-                          className='flex items-start gap-2 text-gray-600 dark:text-gray-400'
+                          className='flex items-start gap-2 text-slate-600 dark:text-slate-400'
                         >
                           <Sparkles className='w-4 h-4 text-blue-600 dark:text-cyan-400 mt-1 flex-shrink-0' />
                           {highlight}
@@ -440,22 +444,22 @@ export default function AboutSection() {
 
           {/* Featured Projects */}
           <div className='mb-16'>
-            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
+            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center text-slate-900 dark:text-white'>
               Featured Projects
             </h2>
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {featuredProjects.map((project, index) => (
                 <div
                   key={index}
-                  className='rounded-2xl shadow-xl p-6 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10 hover:scale-105 transition-transform'
+                  className='rounded-2xl shadow-xl p-6 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10 hover:scale-105 transition-transform'
                 >
-                  <h3 className='text-xl font-bold text-gray-900 dark:text-white mb-2'>
+                  <h3 className='text-xl font-bold text-slate-900 dark:text-white mb-2'>
                     {project.name}
                   </h3>
                   <p className='text-sm font-mono text-blue-600 dark:text-cyan-400 mb-3'>
                     {project.tech}
                   </p>
-                  <p className='text-gray-600 dark:text-gray-400 text-sm'>
+                  <p className='text-slate-600 dark:text-slate-400 text-sm'>
                     {project.description}
                   </p>
                 </div>
@@ -465,16 +469,16 @@ export default function AboutSection() {
 
           {/* Skills Section */}
           <div className='mb-16'>
-            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
+            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center text-slate-900 dark:text-white'>
               Technical Skills
             </h2>
             <div className='grid md:grid-cols-3 gap-6'>
               {skills.map((skillSet, index) => (
                 <div
                   key={index}
-                  className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'
+                  className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'
                 >
-                  <h3 className='text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3'>
+                  <h3 className='text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3'>
                     <div className='w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                       <Code2 className='w-5 h-5 text-blue-600 dark:text-cyan-400' />
                     </div>
@@ -497,18 +501,18 @@ export default function AboutSection() {
 
           {/* Education & Certifications */}
           <div>
-            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-600'>
+            <h2 className='text-3xl sm:text-4xl font-bold mb-8 text-center text-slate-900 dark:text-white'>
               Education & Certifications
             </h2>
             <div className='grid md:grid-cols-2 gap-6'>
               {/* Diploma */}
-              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'>
+              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'>
                 <div className='flex items-center gap-4 mb-4'>
                   <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                     <GraduationCap className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                   </div>
                   <div>
-                    <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
+                    <h3 className='text-xl font-bold text-slate-900 dark:text-white'>
                       Diploma in Engineering
                     </h3>
                     <p className='text-blue-600 dark:text-cyan-400 font-semibold'>
@@ -516,22 +520,22 @@ export default function AboutSection() {
                     </p>
                   </div>
                 </div>
-                <p className='text-gray-700 dark:text-gray-300 mb-2'>
+                <p className='text-slate-700 dark:text-slate-300 mb-2'>
                   S M Toffazzol Hossain Polytechnic Institute
                 </p>
-                <p className='text-gray-500 dark:text-gray-500 text-sm'>
+                <p className='text-slate-500 dark:text-slate-500 text-sm'>
                   2017 - 2022
                 </p>
               </div>
 
               {/* Generative AI */}
-              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'>
+              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'>
                 <div className='flex items-center gap-4 mb-4'>
                   <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                     <Award className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                   </div>
                   <div>
-                    <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
+                    <h3 className='text-xl font-bold text-slate-900 dark:text-white'>
                       Generative AI Mastermind
                     </h3>
                     <p className='text-blue-600 dark:text-cyan-400 font-semibold'>
@@ -539,22 +543,22 @@ export default function AboutSection() {
                     </p>
                   </div>
                 </div>
-                <p className='text-gray-700 dark:text-gray-300 mb-2'>
+                <p className='text-slate-700 dark:text-slate-300 mb-2'>
                   By Outskill
                 </p>
-                <p className='text-gray-500 dark:text-gray-500 text-sm'>
+                <p className='text-slate-500 dark:text-slate-500 text-sm'>
                   Advanced AI & Machine Learning
                 </p>
               </div>
 
               {/* Complete Web Development with Programming Hero L1 */}
-              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'>
+              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'>
                 <div className='flex items-center gap-4 mb-4'>
                   <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                     <Award className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                   </div>
                   <div>
-                    <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
+                    <h3 className='text-xl font-bold text-slate-900 dark:text-white'>
                       Complete Web Development with Programming Hero L1
                     </h3>
                     <p className='text-blue-600 dark:text-cyan-400 font-semibold'>
@@ -562,20 +566,20 @@ export default function AboutSection() {
                     </p>
                   </div>
                 </div>
-                <p className='text-gray-700 dark:text-gray-300 mb-2'>
+                <p className='text-slate-700 dark:text-slate-300 mb-2'>
                   By Programming Hero
                 </p>
-                <p className='text-gray-500 dark:text-gray-500 text-sm'>2023</p>
+                <p className='text-slate-500 dark:text-slate-500 text-sm'>2023</p>
               </div>
 
               {/* Complete Web Development Course With Jhankar Mahbub */}
-              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white border-gray-200 dark:bg-gray-900/50 dark:border-gray-800 dark:shadow-purple-500/10'>
+              <div className='rounded-2xl shadow-xl p-8 backdrop-blur-sm border bg-white/85 border-slate-200/70 dark:bg-slate-900/80 dark:border-slate-700/60 dark:shadow-purple-500/10'>
                 <div className='flex items-center gap-4 mb-4'>
                   <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 via-blue-100 to-purple-100 dark:from-cyan-500/20 dark:via-blue-600/20 dark:to-purple-700/20 flex items-center justify-center'>
                     <Award className='w-6 h-6 text-blue-600 dark:text-cyan-400' />
                   </div>
                   <div>
-                    <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
+                    <h3 className='text-xl font-bold text-slate-900 dark:text-white'>
                       Next Level Web Development by Programming Hero
                     </h3>
                     <p className='text-blue-600 dark:text-cyan-400 font-semibold'>
@@ -583,10 +587,10 @@ export default function AboutSection() {
                     </p>
                   </div>
                 </div>
-                <p className='text-gray-700 dark:text-gray-300 mb-2'>
+                <p className='text-slate-700 dark:text-slate-300 mb-2'>
                   By Next Level Team Programming Hero
                 </p>
-                <p className='text-gray-500 dark:text-gray-500 text-sm'>
+                <p className='text-slate-500 dark:text-slate-500 text-sm'>
                   Ongoing
                 </p>
               </div>
