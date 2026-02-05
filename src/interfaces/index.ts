@@ -27,16 +27,53 @@ export interface SafeResume {
   summary: string | null;
   professionalPhoto: string | null;
   isPublic: boolean;
-  experiences: Record<string, unknown>[] | null;
-  education: Record<string, unknown>[] | null;
+  experiences: ResumeExperience[] | null;
+  education: ResumeEducation[] | null;
   skills: string[];
-  projects: Record<string, unknown>[] | null;
-  certifications: Record<string, unknown>[] | null;
-  contactInfo: Record<string, unknown> | null;
+  projects: ResumeProject[] | null;
+  certifications: ResumeCertification[] | null;
+  contactInfo: ResumeContactInfo | null;
   userId: string;
   createdById?: string | null;
   updatedById?: string | null;
   deletedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ResumeExperience {
+  role?: string;
+  title?: string;
+  company?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+export interface ResumeEducation {
+  institution?: string;
+  school?: string;
+  degree?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+export interface ResumeProject {
+  name?: string;
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+export interface ResumeCertification {
+  name?: string;
+  title?: string;
+  issuer?: string;
+  [key: string]: unknown;
+}
+
+export interface ResumeContactInfo {
+  email?: string;
+  phone?: string;
+  location?: string;
+  [key: string]: unknown;
 }

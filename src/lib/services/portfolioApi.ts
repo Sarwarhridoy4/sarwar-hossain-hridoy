@@ -28,12 +28,12 @@ export const portfolioApi = createApi({
     credentials: "include",
   }),
   endpoints: (builder) => ({
-    getProjects: builder.query<SafeProject[], QueryParams | void>({
+    getProjects: builder.query<SafeProject[], QueryParams | undefined>({
       query: (params) => `projects${buildQueryString(params)}`,
       transformResponse: (response: ApiListResponse<SafeProject>) =>
         response.data,
     }),
-    getBlogs: builder.query<SafeBlog[], QueryParams | void>({
+    getBlogs: builder.query<SafeBlog[], QueryParams | undefined>({
       query: (params) => `blogs${buildQueryString(params)}`,
       transformResponse: (response: ApiListResponse<SafeBlog>) => response.data,
     }),
