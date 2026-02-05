@@ -33,6 +33,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://sarwar-hossain-hridoy.vercel.app/contact",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact | Sarwar Hossain",
+    description:
+      "Let’s connect! Reach out to Sarwar Hossain for any web development opportunities.",
+    images: ["https://sarwar-hossain-hridoy.vercel.app/og-image.png"],
+  },
 };
 
 const ContactPage = () => {
