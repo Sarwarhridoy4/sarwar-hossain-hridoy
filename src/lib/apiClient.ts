@@ -13,11 +13,29 @@ interface FetchOptions extends RequestInit {
  * @returns {Promise<any>} Response JSON or null on error
  */
 
+import { getBaseUrl } from "./baseUrl";
+
+const tryRefreshToken = async (cookieHeader?: string) => {
+  try {
+    const res = await fetch(`${getBaseUrl()}/auth/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookieHeader ? { Cookie: `${cookieHeader}` } : {}),
+      },
+      credentials: "include",
+    });
+    if (!res.ok) return false;
+    return true;
+  } catch (err) {
+    console.error("Error refreshing token:", err);
+    return false;
+  }
+};
+
 export async function fetchWithCookies({ path, ...options }: FetchOptions) {
   // Get serialized cookies for server-side requests
-  const BASE_URL =
-    process.env.NEXT_PUBLIC_BASE_API || "http://localhost:5000/api/v1";
-
+  const BASE_URL = getBaseUrl();
   const cookieHeader = await getCookieHeader();
 
   try {
@@ -30,6 +48,24 @@ export async function fetchWithCookies({ path, ...options }: FetchOptions) {
       },
       credentials: "include", // ensures cookies are sent in client-side fetch
     });
+
+    if (res.status === 401) {
+      const refreshed = await tryRefreshToken(cookieHeader);
+      if (refreshed) {
+        const retryRes = await fetch(`${BASE_URL}/${path}`, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            ...(cookieHeader ? { Cookie: `${cookieHeader}` } : {}),
+            ...(options.headers || {}),
+          },
+          credentials: "include",
+        });
+        if (!retryRes.ok)
+          throw new Error(`HTTP error! status: ${retryRes.status}`);
+        return await retryRes.json();
+      }
+    }
 
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 

@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import { Toaster } from "@/components/ui/sonner";
-import AuthProvider from "@/Providers/auth";
 import ReduxProvider from "@/Providers/redux";
 
 const spaceGrotesk = Space_Grotesk({
@@ -104,32 +103,30 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <AuthProvider>
-          <ReduxProvider>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='system'
-              enableSystem
-              disableTransitionOnChange
-            >
-            <Navbar />
-            <main id='main-content' className='min-h-screen flex flex-col'>
-              {children}
-            </main>
-            <a
-              href='https://wa.me/8801932893580'
-              target='_blank'
-              rel='noopener noreferrer'
-              aria-label='Chat on WhatsApp'
-              className='fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2'
-            >
-              <span className='text-lg font-semibold'>WA</span>
-            </a>
-            <Toaster richColors position='top-right' />
-            <Footer />
-          </ThemeProvider>
-          </ReduxProvider>
-        </AuthProvider>
+        <ReduxProvider>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+          <Navbar />
+          <main id='main-content' className='min-h-screen flex flex-col'>
+            {children}
+          </main>
+          <a
+            href='https://wa.me/8801932893580'
+            target='_blank'
+            rel='noopener noreferrer'
+            aria-label='Chat on WhatsApp'
+            className='fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 transition hover:-translate-y-1 hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2'
+          >
+            <span className='text-lg font-semibold'>WA</span>
+          </a>
+          <Toaster richColors position='top-right' />
+          <Footer />
+        </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

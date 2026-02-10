@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { getSession, signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock, Rocket, Loader2 } from "lucide-react";
+import { clientApiFetch } from "@/lib/clientApi";
 
 import {
   Form,
@@ -52,26 +52,27 @@ import {
   const onSubmit = async (values: FieldValues) => {
     setIsLoading(true);
     try {
-      // Call NextAuth credentials provider
-      const res = await signIn("credentials", {
-        redirect: false, // Prevent automatic redirect
-        email: values.email,
-        password: values.password,
+      const res = await clientApiFetch({
+        path: "auth/login",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
       });
 
-      if (res?.error) {
-        toast.error(res.error);
-        return;
-      }
-
-      // Fetch session after successful login
-      const session = await getSession();
-
-      if (session?.user?.id) {
+      if (res?.data?.id) {
         toast.success("Login Successful");
-        router.push("/dashboard");
+        if (res.data.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
-        toast.error("Failed to get session");
+        toast.error(res?.message || "Login failed");
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -221,45 +222,6 @@ import {
                   "Sign In"
                 )}
               </Button>
-
-              {/* Divider */}
-              <div className='relative w-full'>
-                <div className='absolute inset-0 flex items-center'>
-                  <span className='w-full border-t border-slate-300 dark:border-slate-700' />
-                </div>
-                <div className='relative flex justify-center text-xs uppercase'>
-                  <span className='bg-white dark:bg-slate-950 px-2 text-slate-500 dark:text-slate-400'>
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              {/* Social Buttons */}
-              <div className='grid grid-cols-2 gap-3'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() =>
-                    signIn("google", { callbackUrl: "/dashboard" })
-                  }
-                  disabled={isLoading}
-                  className='border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors'
-                >
-                  Google
-                </Button>
-
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() =>
-                    signIn("github", { callbackUrl: "/dashboard" })
-                  }
-                  disabled={isLoading}
-                  className='border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors'
-                >
-                  GitHub
-                </Button>
-              </div>
 
               {/* Signup Link */}
               <p className='text-sm text-center text-slate-600 dark:text-slate-400'>

@@ -1,76 +1,105 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+
+type AuthUser = {
+  id: string;
+  email: string;
+  role: "ADMIN" | "USER";
+};
+
+const getAuthUser = async (req: NextRequest): Promise<AuthUser | null> => {
+  const accessToken = req.cookies.get("accessToken")?.value;
+  if (!accessToken) return null;
+
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_API || "http://localhost:5000/api/v1";
+
+    const res = await fetch(`${baseUrl}/auth/me`, {
+      method: "GET",
+      headers: {
+        cookie: req.headers.get("cookie") || "",
+      },
+      cache: "no-store",
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      return json?.data || null;
+    }
+
+    if (res.status !== 401) return null;
+
+    const refreshRes = await fetch(`${baseUrl}/auth/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        cookie: req.headers.get("cookie") || "",
+      },
+      cache: "no-store",
+    });
+
+    if (!refreshRes.ok) return null;
+
+    const retryRes = await fetch(`${baseUrl}/auth/me`, {
+      method: "GET",
+      headers: {
+        cookie: req.headers.get("cookie") || "",
+      },
+      cache: "no-store",
+    });
+
+    if (!retryRes.ok) return null;
+    const retryJson = await retryRes.json();
+    return retryJson?.data || null;
+  } catch (error) {
+    console.error("Auth check failed", error);
+    return null;
+  }
+};
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname;
-  const secret = process.env.NEXTAUTH_SECRET;
 
-  // 1️⃣ Get NextAuth JWT token
-  const token = await getToken({ req, secret });
+  const user = await getAuthUser(req);
 
-  // 2️⃣ Prepare response
-  const res = NextResponse.next();
-
-  // 3️⃣ If token exists, set accessToken cookie for backend requests
-  if (token?.accessToken) {
-    res.cookies.set({
-      name: "accessToken",
-      value: String(token.accessToken),
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-    });
-  }
-
-  // 4️⃣ Redirect logged-in users away from auth pages
-  if (token && (pathname === "/login" || pathname === "/signup")) {
-    // ✅ Admin goes to /admin
-    if (token.role === "ADMIN") {
+  if (pathname === "/login" || pathname === "/signup") {
+    if (user?.role === "ADMIN") {
       url.pathname = "/admin";
-    } else {
+      return NextResponse.redirect(url);
+    }
+    if (user) {
       url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
     }
-    return NextResponse.redirect(url);
+    return NextResponse.next();
   }
 
-  // 5️⃣ Protect /admin routes (ADMIN only)
   if (pathname.startsWith("/admin")) {
-    if (!token) {
+    if (!user) {
       url.pathname = "/login";
       return NextResponse.redirect(url);
     }
-    if (token.role !== "ADMIN") {
+    if (user.role !== "ADMIN") {
       url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }
 
-  // 6️⃣ Protect /dashboard routes (USER or ADMIN)
   if (pathname.startsWith("/dashboard")) {
-    if (!token) {
+    if (!user) {
       url.pathname = "/login";
       return NextResponse.redirect(url);
     }
-
-    // ✅ Admin should always go to /admin instead
-    if (token.role === "ADMIN") {
+    if (user.role === "ADMIN") {
       url.pathname = "/admin";
       return NextResponse.redirect(url);
     }
-
-    if (!(token.role === "USER" || token.role === "ADMIN")) {
-      url.pathname = "/";
-      return NextResponse.redirect(url);
-    }
   }
 
-  // 7️⃣ Allow access otherwise
-  return res;
+  return NextResponse.next();
 }
 
-// 8️⃣ Match protected paths
 export const config = {
   matcher: ["/dashboard/:path*", "/admin/:path*", "/login", "/signup"],
 };

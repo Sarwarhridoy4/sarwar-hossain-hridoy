@@ -1,5 +1,12 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  createApi,
+  fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchArgs,
+  type FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
 import type { SafeBlog, SafeProject, SafeResume } from "@/interfaces";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 type ApiListResponse<T> = {
   success: boolean;
@@ -20,13 +27,39 @@ const buildQueryString = (params?: QueryParams) => {
   return queryString ? `?${queryString}` : "";
 };
 
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: getBaseUrl(),
+  credentials: "include",
+});
+
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await rawBaseQuery(args, api, extraOptions);
+
+  if (result.error?.status === 401) {
+    const refreshResult = await rawBaseQuery(
+      {
+        url: "auth/refresh-token",
+        method: "POST",
+      },
+      api,
+      extraOptions
+    );
+
+    if (!refreshResult.error) {
+      result = await rawBaseQuery(args, api, extraOptions);
+    }
+  }
+
+  return result;
+};
+
 export const portfolioApi = createApi({
   reducerPath: "portfolioApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl:
-      process.env.NEXT_PUBLIC_BASE_API || "http://localhost:5000/api/v1",
-    credentials: "include",
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getProjects: builder.query<SafeProject[], QueryParams | undefined>({
       query: (params) => `projects${buildQueryString(params)}`,

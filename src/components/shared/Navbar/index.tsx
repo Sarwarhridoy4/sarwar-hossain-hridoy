@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, User, LayoutDashboard, LogOut, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/toggleMode";
-import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
+import { clientApiFetch } from "@/lib/clientApi";
+
+type AuthUser = {
+  id: string;
+  name?: string;
+  profilePicture?: string | null;
+  role?: "ADMIN" | "USER";
+};
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -29,16 +37,34 @@ const Navbar = () => {
     { name: "Contact", href: "/contact" },
   ];
 
-  // Prevent rendering until client has determined session
-  if (status === "loading") return null;
-  const handleSignOut = () => {
-    // Remove custom non-HTTP-only cookie
-    document.cookie = "accessToken=; path=/; max-age=0;";
+  useEffect(() => {
+    const getMe = async () => {
+      try {
+        const res = await clientApiFetch({ path: "auth/me", method: "GET" });
+        setUser(res?.data ?? null);
+      } catch (error) {
+        console.error("Failed to fetch user session", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Sign out from NextAuth
-    signOut({
-      callbackUrl: "/login",
-    });
+    getMe();
+  }, []);
+
+  if (isLoading) return null;
+
+  const dashboardHref = user?.role === "ADMIN" ? "/admin" : "/dashboard";
+
+  const handleSignOut = async () => {
+    try {
+      await clientApiFetch({ path: "auth/logout", method: "POST" });
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      window.location.href = "/login";
+    }
   };
 
   return (
@@ -79,13 +105,13 @@ const Navbar = () => {
             <ModeToggle />
 
             {/* Auth Section */}
-            {session ? (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  {session.user?.image ? (
+                  {user.profilePicture ? (
                     <Image
-                      src={session?.user?.image}
-                      alt={session?.user?.name || "User"}
+                      src={user.profilePicture}
+                      alt={user.name || "User"}
                       width={40}
                       height={40}
                       className='rounded-2xl'
@@ -96,15 +122,15 @@ const Navbar = () => {
                   )}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end' className='w-48'>
-                  <DropdownMenuLabel>
-                    {session.user?.name || "User"}
-                  </DropdownMenuLabel>
+                  <DropdownMenuLabel>{user.name || "User"}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <User className='h-4 w-4 mr-2' /> Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <LayoutDashboard className='h-4 w-4 mr-2' /> Dashboard
+                  <DropdownMenuItem asChild>
+                    <Link href={dashboardHref} className='flex items-center'>
+                      <LayoutDashboard className='h-4 w-4 mr-2' /> Dashboard
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
@@ -161,7 +187,7 @@ const Navbar = () => {
             ))}
 
             {/* Mobile auth buttons */}
-            {session ? (
+            {user ? (
               <Button
                 variant='outline'
                 className='w-full mt-2'
